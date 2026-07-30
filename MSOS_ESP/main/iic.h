@@ -12,6 +12,7 @@
 esp_err_t iic_init(void);
 void iic_scan(void);
 esp_err_t iic_send_bytes(unsigned char addr, unsigned char *txd, unsigned int len);
+esp_err_t iic_read_reg(unsigned char addr, unsigned char reg, unsigned char *rxd, unsigned int len);
 unsigned char iic_read_byte(unsigned char addr);
 
 #endif

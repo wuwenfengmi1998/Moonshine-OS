@@ -53,6 +53,18 @@ esp_err_t iic_send_bytes(unsigned char addr, unsigned char *txd, unsigned int le
     return i2c_master_transmit(s_iic_dev, (const uint8_t *)txd, (size_t)len, IIC_TIMEOUT_MS);
 }
 
+esp_err_t iic_read_reg(unsigned char addr, unsigned char reg, unsigned char *rxd, unsigned int len)
+{
+    if (rxd == NULL || len == 0 || s_iic_dev == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    esp_err_t ret = i2c_master_device_change_address(s_iic_dev, (uint16_t)addr, IIC_TIMEOUT_MS);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+    return i2c_master_transmit_receive(s_iic_dev, &reg, 1, rxd, len, IIC_TIMEOUT_MS);
+}
+
 unsigned char iic_read_byte(unsigned char addr)
 {
     uint8_t byte = 0;

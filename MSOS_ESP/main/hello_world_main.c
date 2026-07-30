@@ -16,6 +16,7 @@
 #include "iic.h"
 #include "oled.h"
 #include "state.h"
+#include "tca9535.h"
 
 void app_main(void)
 {
@@ -48,6 +49,7 @@ void app_main(void)
 
     state_init();
     iic_init();
+    tca9535_init();
     oled_init();
 
     while(1){
