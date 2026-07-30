@@ -15,6 +15,7 @@
 
 #include "iic.h"
 #include "oled.h"
+#include "state.h"
 
 void app_main(void)
 {
@@ -45,11 +46,11 @@ void app_main(void)
 
     printf("Minimum free heap size: %" PRIu32 " bytes\n", esp_get_minimum_free_heap_size());
 
+    state_init();
     iic_init();
     oled_init();
 
     while(1){
-
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }

@@ -1,4 +1,5 @@
 #include "iic.h"
+#include "state.h"
 #include "driver/i2c_master.h"
 #include "esp_log.h"
 #include <stdint.h>
@@ -36,6 +37,7 @@ esp_err_t iic_init(void)
         return ret;
     }
     ESP_LOGI(TAG, "IIC IO总线初始化成功");
+    iic_scan();
     return ESP_OK;
 }
 
@@ -62,4 +64,23 @@ unsigned char iic_read_byte(unsigned char addr)
     }
     i2c_master_receive(s_iic_dev, &byte, 1, IIC_TIMEOUT_MS);
     return (unsigned char)byte;
+}
+
+void iic_scan(void)
+{
+    if (s_iic_bus == NULL) {
+        ESP_LOGE(TAG, "scan: bus not initialized");
+        return;
+    }
+    ESP_LOGI(TAG, "IIC bus scan start");
+    state_clear_iic_devices();
+    unsigned char count = 0;
+    for (unsigned char addr = 0x01; addr <= 0x7F; addr++) {
+        if (i2c_master_probe(s_iic_bus, addr, IIC_SCAN_TIMEOUT_MS) == ESP_OK) {
+            ESP_LOGI(TAG, "  found @ 0x%02X", (unsigned)addr);
+            state_add_iic_device(addr);
+            count++;
+        }
+    }
+    ESP_LOGI(TAG, "IIC scan done, %u device(s) found", (unsigned)count);
 }
