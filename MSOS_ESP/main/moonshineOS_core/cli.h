@@ -3,5 +3,6 @@
 
 void cli_init(void);
 void cli_run(void);
+void cli_start(void);
 
 #endif

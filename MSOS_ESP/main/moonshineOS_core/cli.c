@@ -3,10 +3,16 @@
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "driver/uart.h"
+#include "driver/uart_vfs.h"
 #include "iic.h"
 
-#define CLI_LINE_MAX  256
-#define CLI_MAX_ARGS  16
+#define CLI_LINE_MAX    256
+#define CLI_MAX_ARGS    16
+#define CLI_TASK_STACK  4096
+#define CLI_TASK_PRIO   5
+#define CLI_UART_NUM    UART_NUM_0
+#define CLI_UART_RX_BUF 256
 
 typedef int (*cli_cmd_func_t)(int argc, char **argv);
 
@@ -55,6 +61,7 @@ static int read_line(char *buf, int maxlen)
     while (i < maxlen - 1) {
         int c = getchar();
         if (c < 0) {
+            clearerr(stdin);
             vTaskDelay(1);
             continue;
         }
@@ -101,6 +108,18 @@ void cli_init(void)
 {
     setvbuf(stdin, NULL, _IONBF, 0);
     setvbuf(stdout, NULL, _IONBF, 0);
+    uart_driver_install(CLI_UART_NUM, CLI_UART_RX_BUF, 0, 0, NULL, 0);
+    uart_vfs_dev_use_driver(CLI_UART_NUM);
+}
+
+static void cli_task(void *arg)
+{
+    cli_run();
+}
+
+void cli_start(void)
+{
+    xTaskCreate(cli_task, "cli", CLI_TASK_STACK, NULL, CLI_TASK_PRIO, NULL);
 }
 
 void cli_run(void)

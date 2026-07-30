@@ -53,7 +53,7 @@ void app_main(void)
     tca9535_init();
     oled_init();
     cli_init();
-    //cli_run();
+    cli_start();
     while(1){
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
