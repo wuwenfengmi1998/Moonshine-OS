@@ -17,6 +17,7 @@
 #include "oled.h"
 #include "state.h"
 #include "tca9535.h"
+#include "cli.h"
 
 void app_main(void)
 {
@@ -51,7 +52,8 @@ void app_main(void)
     iic_init();
     tca9535_init();
     oled_init();
-
+    cli_init();
+    //cli_run();
     while(1){
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
