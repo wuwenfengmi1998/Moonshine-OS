@@ -6,6 +6,7 @@
 
 #define BUTTON_PASS_TIMES       50
 #define BUTTON_LONGPASS_TIMES   1000
+#define BUTTON_POWER_LONGPASS_TIMES 2000
 
 struct button {
     uint8_t      lock;
@@ -15,6 +16,7 @@ struct button {
     uint8_t      pass_;
     uint8_t      longpassread;
     uint32_t     time;
+    uint32_t     longpass_time;
 };
 
 

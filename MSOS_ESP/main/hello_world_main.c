@@ -17,6 +17,7 @@
 #include "oled.h"
 #include "state.h"
 #include "tca9535.h"
+#include "power.h"
 #include "cli.h"
 
 void app_main(void)
@@ -51,10 +52,9 @@ void app_main(void)
     state_init();
     iic_init();
     tca9535_init();
-    //tca9535 P12是POWER_EN,这个io为1时维持供电，需要设为输出模式，需要先设为0再delay一段时间然后再将这个io设为1
-    //tca9535_set_pin(12, 0);
-    //delay(1000);
-    //tca9535_set_pin(12, 1);
+    power_init();
+
+    
 
     oled_init();
     cli_init();
